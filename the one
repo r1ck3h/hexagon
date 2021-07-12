@@ -1888,23 +1888,6 @@ if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfil
 	end
 end
 
-print("Hexagon finished loading!")= LocalPlayer.PlayerGui.GUI.Scoreboard[v] and child:FindFirstChild("player") and child.player.Text ~= "PLAYER" and UserInputService:IsKeyDown(Enum.KeyCode.Tab) then
-			if game.Players:FindFirstChild(child.player.Text) and game.Players[child.player.Text].OsPlatform:sub(1,1) == "|" then
-				plr = game.Players[child.player.Text]
-				child.player.Text = plr.OsPlatform:sub(2, 41).." "..plr.Name
-				
-				updater = plr:GetPropertyChangedSignal("OsPlatform"):Connect(function()
-					if child and child.Parent and child:FindFirstChild("player") or UserInputService:IsKeyDown(Enum.KeyCode.Tab) and plr.OsPlatform:sub(1,1) == "|" then
-						child.player.Text = plr.OsPlatform:sub(2, 41).." "..plr.Name
-					else
-						updater:Disconnect()
-					end
-				end)
-			end
-		end
-	end)
-end
-
 if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfile("hexagon/autoload.txt")) then
 	local a,b = pcall(function()
 		cfg = loadstring("return "..readfile("hexagon/configs/"..readfile("hexagon/autoload.txt")))()
