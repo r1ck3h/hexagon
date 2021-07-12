@@ -1,10 +1,6 @@
-local Hint = Instance.new("Hint", game.CoreGui)
-Hint.Text = "Hexagon | Waiting for the game to load..."
-
 repeat wait() until game:IsLoaded()
 repeat wait() until game.Players.LocalPlayer.PlayerGui:FindFirstChild("GUI")
 
-Hint.Text = "Hexagon | Setting up environment..."
 
 -- Services
 local UserInputService = game:GetService("UserInputService")
@@ -25,7 +21,6 @@ if (getsenv == false) then return game.Players.LocalPlayer:Kick("Exploit not sup
 if (listfiles == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: listfiles.") end
 if (isfolder == false) then return game.Players.LocalPlayer:Kick("Exploit not supported! Missing: isfolder.") end
 
-Hint.Text = "Hexagon | Setting up configuration settings..."
 
 if not isfolder("hexagon") then
 	print("creating hexagon folder")
@@ -62,7 +57,6 @@ if not isfile("hexagon/skyboxes.txt") then
 	writefile("hexagon/skyboxes.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/skyboxes.txt"))
 end
 
-Hint.Text = "Hexagon | Loading..."
 
 -- Viewmodels fix
 for i,v in pairs(game.ReplicatedStorage.Viewmodels:GetChildren()) do
@@ -1713,7 +1707,6 @@ Mouse.Move:Connect(function()
 	end
 end)
 
-Hint.Text = "Hexagon | Setting up hooks..."
 
 hookfunc(getrenv().xpcall, function() end)
 
@@ -1860,6 +1853,35 @@ for i,v in pairs({"CT", "T"}) do
 		wait(0.1)
 		
 		if child.Parent == LocalPlayer.PlayerGui.GUI.Scoreboard[v] and child:FindFirstChild("player") and child.player.Text ~= "PLAYER" and UserInputService:IsKeyDown(Enum.KeyCode.Tab) then
+			if game.Players:FindFirstChild(child.player.Text) and game.Players[child.player.Text].OsPlatform:sub(1,1) == "|" then
+				plr = game.Players[child.player.Text]
+				child.player.Text = plr.OsPlatform:sub(2, 41).." "..plr.Name
+				
+				updater = plr:GetPropertyChangedSignal("OsPlatform"):Connect(function()
+					if child and child.Parent and child:FindFirstChild("player") or UserInputService:IsKeyDown(Enum.KeyCode.Tab) and plr.OsPlatform:sub(1,1) == "|" then
+						child.player.Text = plr.OsPlatform:sub(2, 41).." "..plr.Name
+					else
+						updater:Disconnect()
+					end
+				end)
+			end
+		end
+	end)
+end
+
+if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfile("hexagon/autoload.txt")) then
+	local a,b = pcall(function()
+		cfg = loadstring("return "..readfile("hexagon/configs/"..readfile("hexagon/autoload.txt")))()
+	end)
+	
+	if a == false then
+		warn("Config Loading Error", a, b)
+	elseif a == true then
+		library:LoadConfiguration(cfg)
+	end
+end
+
+print("Hexagon finished loading!")= LocalPlayer.PlayerGui.GUI.Scoreboard[v] and child:FindFirstChild("player") and child.player.Text ~= "PLAYER" and UserInputService:IsKeyDown(Enum.KeyCode.Tab) then
 			if game.Players:FindFirstChild(child.player.Text) and game.Players[child.player.Text].OsPlatform:sub(1,1) == "|" then
 				plr = game.Players[child.player.Text]
 				child.player.Text = plr.OsPlatform:sub(2, 41).." "..plr.Name
