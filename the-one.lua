@@ -1,7 +1,6 @@
 repeat wait() until game:IsLoaded()
 repeat wait() until game.Players.LocalPlayer.PlayerGui:FindFirstChild("GUI")
 
-
 -- Services
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -41,8 +40,6 @@ if not isfile("hexagon/skyboxes.txt") then
 	print("downloading hexagon skyboxes file")
 	writefile("hexagon/skyboxes.txt", game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/default_data/skyboxes.txt"))
 end
-
-
 
 -- Viewmodels fix
 for i,v in pairs(game.ReplicatedStorage.Viewmodels:GetChildren()) do
@@ -108,7 +105,7 @@ local curVel = 16
 local isBhopping = false
 
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/ESP.lua"))()
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pawel12d/hexagon/main/scripts/UILibrary.lua"))()
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/r1ck3h/hexagon/main/uilib.lua"))()
 
 local Window = library:CreateWindow(Vector2.new(500, 500), Vector2.new((workspace.CurrentCamera.ViewportSize.X/2)-250, (workspace.CurrentCamera.ViewportSize.Y/2)-250))
 
@@ -146,6 +143,14 @@ local function GetTeam(plr)
 	return game.Teams[plr.Team.Name]
 end
 
+local function GetSite()
+	if (LocalPlayer.Character.HumanoidRootPart.Position - workspace.Map.SpawnPoints.C4Plant.Position).magnitude > (LocalPlayer.Character.HumanoidRootPart.Position - workspace.Map.SpawnPoints.C4Plant2.Position).magnitude then
+		return "A"
+	else
+		return "B"
+	end
+end
+
 local function CharacterAdded()
 	wait(0.5)
 	if IsAlive(LocalPlayer) then
@@ -169,6 +174,50 @@ local function PlayerAdded()
 	
 end
 
+local function PlantC4()
+	pcall(function()
+	if IsAlive(LocalPlayer) and workspace.Map.Gamemode.Value == "defusal" and workspace.Status.Preparation.Value == false and not planting then 
+		planting = true
+		local pos = LocalPlayer.Character.HumanoidRootPart.CFrame 
+		workspace.CurrentCamera.CameraType = "Fixed"
+		LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.Map.SpawnPoints.C4Plant.CFrame
+		wait(0.2)
+		game.ReplicatedStorage.Events.PlantC4:FireServer((pos + Vector3.new(0, -2.75, 0)) * CFrame.Angles(math.rad(90), 0, math.rad(180)), GetSite())
+		wait(0.2)
+		LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+		LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		game.Workspace.CurrentCamera.CameraType = "Custom"
+		planting = false
+	end
+	end)
+end
+
+local function DefuseC4()
+	pcall(function()
+	if IsAlive(LocalPlayer) and workspace.Map.Gamemode.Value == "defusal" and not defusing and workspace:FindFirstChild("C4") then 
+		defusing = true
+		LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		local pos = LocalPlayer.Character.HumanoidRootPart.CFrame 
+		workspace.CurrentCamera.CameraType = "Fixed"
+		LocalPlayer.Character.HumanoidRootPart.CFrame = workspace.C4.Handle.CFrame + Vector3.new(0, 2, 0)
+		LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		wait(0.1)
+		LocalPlayer.Backpack.PressDefuse:FireServer(workspace.C4)
+		LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		wait(0.25)
+		if IsAlive(LocalPlayer) and workspace:FindFirstChild("C4") and workspace.C4:FindFirstChild("Defusing") and workspace.C4.Defusing.Value == LocalPlayer then
+			LocalPlayer.Backpack.Defuse:FireServer(workspace.C4)
+		end
+		LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		wait(0.2)
+		LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		LocalPlayer.Character.HumanoidRootPart.CFrame = pos
+		LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+		game.Workspace.CurrentCamera.CameraType = "Custom"
+		defusing = false
+	end
+	end)
+end
 
 function GetSpectators()
 	local CurrentSpectators = {}
@@ -582,7 +631,7 @@ VisualsTabCategoryBombESP:AddMultiDropdown("Info", {"Icon", "Text", "Timer"}, {"
 
 local VisualsTabCategoryOthers = VisualsTab:AddCategory("Others", 1)
 
-VisualsTabCategoryOthers:AddMultiDropdown("Remove Effects", {"Scope", "Flash", "Smoke", "Bullet Holes", "Blood", "Ragdolls"}, {}, "VisualsTabCategoryOthersRemoveEffects", function(val)
+VisualsTabCategoryOthers:AddMultiDropdown("Remove Effects", {"Scope", "Flash", "Smoke", "Bullet Holes", "Blood"}, {}, "VisualsTabCategoryOthersRemoveEffects", function(val)
 	if table.find(val, "Scope") then
 		LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.ImageTransparency = 1
 		LocalPlayer.PlayerGui.GUI.Crosshairs.Scope.Scope.ImageTransparency = 1
@@ -635,10 +684,6 @@ VisualsTabCategoryOthers:AddMultiDropdown("Remove Effects", {"Scope", "Flash", "
 				v:Remove()
 			end
 		end
-	end
-	
-	if table.find(val, "Ragdolls") then
-		-- Ragdolls are currently disabled in the game
 	end
 end)
 
@@ -883,8 +928,6 @@ MiscellaneousTabCategoryMain:AddDropdown("Barriers", {"Normal", "Visible", "Remo
 	end)
 end)
 
-
-
 local a,b = pcall(function()
 	MiscellaneousTabCategoryMain:AddMultiDropdown("Custom Models", TableToNames(loadstring("return "..readfile("hexagon/custom_models.txt"))(), true), {}, "MiscellaneousTabCategoryMainCustomModels", function(val)
 		if not ViewmodelsBackup then
@@ -978,23 +1021,19 @@ MiscellaneousTabCategoryMain:AddButton("Crash Server", function()
 end)
 
 
+MiscellaneousTabCategoryMain:AddButton("Arsenal Emotes", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/r1ck3h/hexagon/main/arsenal%20emotes"))()
+end)
+
 MiscellaneousTabCategoryMain:AddButton("Vote Kick Yourself", function()
 	game.ReplicatedStorage.Events.Vote:FireServer(game.Players.LocalPlayer.Name)
 end)
 
-MiscellaneousTabCategoryMain:AddButton("Arsenal Emotes", function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/r1ck3h/hexagon/main/arsenal%20emotes"))()
-end)
-
 MiscellaneousTabCategoryMain:AddToggle("Anti Vote Kick", false, "MiscellaneousTabCategoryMainAntiVoteKick")
-
-MiscellaneousTabCategoryMain:AddToggle("Anti Spectators", false, "MiscellaneousTabCategoryMainAntiSpectators")
 
 MiscellaneousTabCategoryMain:AddToggle("Unlock Reset Character", false, "MiscellaneousTabCategoryMainUnlockResetCharacter", function(val)
 	game:GetService("StarterGui"):SetCore("ResetButtonCallback", val)
 end)
-
-MiscellaneousTabCategoryMain:AddToggle("Unlock Shop While Alive", false, "MiscellaneousTabCategoryMainUnlockShopWhileAlive")
 
 MiscellaneousTabCategoryMain:AddToggle("Show Spectators", false, "MiscellaneousTabCategoryMainShowSpectators", function(val)
 	ShowSpectators = val
@@ -1028,6 +1067,29 @@ MiscellaneousTabCategoryMain:AddToggle("Inf Jump", false, "MiscellaneousTabCateg
 		end)
 	elseif val == false and JumpHook then
 		JumpHook:Disconnect()
+	end
+end)
+
+MiscellaneousTabCategoryMain:AddToggle("Inf Cash", false, "MiscellaneousTabCategoryMainInfCash", function(val)
+	if val == true then
+		LocalPlayer.Cash.Value = 16000
+		CashHook = LocalPlayer.Cash:GetPropertyChangedSignal("Value"):connect(function()
+			LocalPlayer.Cash.Value = 16000
+		end)
+	elseif val == false and CashHook then
+		CashHook:Disconnect()
+	end
+end)
+
+MiscellaneousTabCategoryMain:AddToggle("Inf Stamina", false, "MiscellaneousTabCategoryMainInfStamina", function(val)
+	if val == true then
+		game:GetService("RunService"):BindToRenderStep("Stamina", 100, function()
+			if cbClient.crouchcooldown ~= 0 then
+				cbClient.crouchcooldown = 0
+			end
+		end)
+	elseif val == false then
+		game:GetService("RunService"):UnbindFromRenderStep("Stamina")
 	end
 end)
 
@@ -1123,7 +1185,6 @@ end)
 
 MiscellaneousTabCategoryNoclip:AddSlider("Speed", {0, 100, 16, 1, ""}, "MiscellaneousTabCategoryNoclipSpeed")
 
-
 local MiscellaneousTabCategoryGunMods = MiscellaneousTab:AddCategory("Gun Mods", 2)
 
 MiscellaneousTabCategoryGunMods:AddSlider("Damage Multiplier", {0, 100, 1, 0.01, "x"}, "MiscellaneousTabCategoryGunModsDamageMultiplier")
@@ -1159,6 +1220,14 @@ MiscellaneousTabCategoryGunMods:AddToggle("Infinite Range", false, "Miscellaneou
 MiscellaneousTabCategoryGunMods:AddToggle("Infinite Penetration", false, "MiscellaneousTabCategoryGunModsInfinitePenetration")
 
 -- MiscellaneousTabCategoryGunMods:AddSlider("Recoil", {0, 100, 100, 1, "%"}, "MiscellaneousTabCategoryGunModsRecoil")
+
+MiscellaneousTabCategoryGunMods:AddDropdown("Plant", {"Normal", "Instant", "Anywhere"}, "Normal", "MiscellaneousTabCategoryGunModsPlant")
+
+MiscellaneousTabCategoryGunMods:AddDropdown("Defuse", {"Normal", "Instant", "Anywhere"}, "Normal", "MiscellaneousTabCategoryGunModsDefuse")
+
+MiscellaneousTabCategoryGunMods:AddButton("Plant C4", PlantC4)
+
+MiscellaneousTabCategoryGunMods:AddButton("Defuse C4", DefuseC4)
 
 local MiscellaneousTabCategoryBunnyHop = MiscellaneousTab:AddCategory("Bunny Hop", 2)
 
@@ -1212,6 +1281,26 @@ MiscellaneousTabCategoryBacktrack:AddSlider("Transparency", {0, 1, 0, 0.01, ""},
 
 MiscellaneousTabCategoryBacktrack:AddColorPicker("Color", Color3.new(1,1,1), "MiscellaneousTabCategoryBacktrackColor")
 
+local MiscellaneousTabCategoryGrenade = MiscellaneousTab:AddCategory("Grenade", 2)
+
+MiscellaneousTabCategoryGrenade:AddKeybind("Keybind", nil, "MiscellaneousTabCategoryGrenadeKeybind", function(val)
+	if val == true and UserInputService:GetFocusedTextBox() == nil then
+		game:GetService("ReplicatedStorage").Events.ThrowGrenade:FireServer(
+			game.ReplicatedStorage.Weapons[library.pointers.MiscellaneousTabCategoryGrenadeType.value].Model,
+			nil,
+			25,
+			35,
+			workspace.CurrentCamera.CFrame.lookVector * (5 * library.pointers.MiscellaneousTabCategoryGrenadeVelocity.value),
+			nil,
+			nil
+		)
+	end
+end)
+
+MiscellaneousTabCategoryGrenade:AddSlider("Velocity", {0, 100, 10, 1, ""}, "MiscellaneousTabCategoryGrenadeVelocity")
+
+MiscellaneousTabCategoryGrenade:AddDropdown("Type", {"Molotov","HE Grenade","Decoy Grenade","Smoke Grenade","Incendiary Grenade","Flashbang"}, "Molotov", "MiscellaneousTabCategoryGrenadeType")
+
 local MiscellaneousTabCategoryChatSpam = MiscellaneousTab:AddCategory("Chat Spam", 2)
 
 MiscellaneousTabCategoryChatSpam:AddToggle("Enabled", false, "MiscellaneousTabCategoryChatSpamEnabled", function(val)
@@ -1229,8 +1318,7 @@ MiscellaneousTabCategoryChatSpam:AddToggle("Enabled", false, "MiscellaneousTabCa
 	end
 end)
 
-MiscellaneousTabCategoryChatSpam:AddTextBox("Message", "Hexagon is the best!", "MiscellaneousTabCategoryChatSpamMessage")
-
+MiscellaneousTabCategoryChatSpam:AddTextBox("Message", "skill issue kid", "MiscellaneousTabCategoryChatSpamMessage")
 
 
 
@@ -1245,15 +1333,10 @@ SettingsTabCategoryMain:AddButton("Server Rejoin", function()
     game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
 end)
 
-SettingsTabCategoryMain:AddButton("Game Closer lol", function()
-    game.Players.LocalPlayer:Kick("well u clicked it")
-end)
-
 SettingsTabCategoryMain:AddButton("Fix Vote Bug", function()
     LocalPlayer.PlayerGui.GUI.MapVote.Visible = false
 	LocalPlayer.PlayerGui.GUI.Scoreboard.Visible = false
 end)
-
 
 
 local SettingsTabCategoryConfigs = SettingsTab:AddCategory("Configs", 2)
@@ -1303,6 +1386,8 @@ SettingsTabCategoryConfigs:AddButton("Set as default", function()
 end)
 
 
+
+
 -- Other
 game.Players.LocalPlayer.Additionals.TotalDamage.Changed:Connect(function(val)
 	if library.pointers.MiscellaneousTabCategoryMainHitSound.value ~= "" and val ~= 0 then
@@ -1349,13 +1434,11 @@ workspace.CurrentCamera.ChildAdded:Connect(function(new)
 						RightArm.Mesh.TextureId = ""
 						RightArm.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsArmsTransparency.value
 						RightArm.Color = library.pointers.VisualsTabCategoryViewmodelColorsArmsColor.value
-						RightArm.Material = Enum.Material.ForceField
 					end
 					if LeftArm ~= nil then
 						LeftArm.Mesh.TextureId = ""
 						LeftArm.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsArmsTransparency.value
 						LeftArm.Color = library.pointers.VisualsTabCategoryViewmodelColorsArmsColor.value
-						LeftArm.Material = Enum.Material.ForceField
 					end
 				end
 				
@@ -1364,13 +1447,11 @@ workspace.CurrentCamera.ChildAdded:Connect(function(new)
 						RightGlove.Mesh.TextureId = ""
 						RightGlove.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsGlovesTransparency.value
 						RightGlove.Color = library.pointers.VisualsTabCategoryViewmodelColorsGlovesColor.value
-						RightGlove.Material = Enum.Material.ForceField
 					end
 					if LeftGlove ~= nil then
 						LeftGlove.Mesh.TextureId = ""
 						LeftGlove.Transparency = library.pointers.VisualsTabCategoryViewmodelColorsGlovesTransparency.value
 						LeftGlove.Color = library.pointers.VisualsTabCategoryViewmodelColorsGlovesColor.value
-						LeftGlove.Material = Enum.Material.ForceField
 					end
 				end
 
@@ -1598,7 +1679,24 @@ LocalPlayer.PlayerGui.Menew.MainFrame.SkinShop.MouseButton1Click:Connect(functio
 end)
 
 UserInputService.InputBegan:Connect(function(key, isFocused)
-	if key.KeyCode == library.pointers.SettingsTabCategoryUIToggleKeybind.value then
+	if key.UserInputType == Enum.UserInputType.MouseButton1 and UserInputService:GetFocusedTextBox() == nil then
+		if library.pointers.MiscellaneousTabCategoryGunModsPlant.value == "Instant" and IsAlive(LocalPlayer) and LocalPlayer.Character.EquippedTool.Value == "C4" then
+			game.ReplicatedStorage.Events.PlantC4:FireServer((LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, -2.75, 0)) * CFrame.Angles(math.rad(90), 0, math.rad(180)), GetSite())
+		elseif library.pointers.MiscellaneousTabCategoryGunModsPlant.value == "Anywhere" and IsAlive(LocalPlayer) and LocalPlayer.Character.EquippedTool.Value == "C4" then
+			PlantC4()
+		end
+	elseif key.KeyCode == Enum.KeyCode.E then
+		if library.pointers.MiscellaneousTabCategoryGunModsDefuse.value == "Instant" and workspace:FindFirstChild("C4") then
+			spawn(function()
+				wait(0.25)
+				if IsAlive(LocalPlayer) and workspace:FindFirstChild("C4") and workspace.C4:FindFirstChild("Defusing") and LocalPlayer.PlayerGui.GUI.Defusal.Visible == true and workspace.C4.Defusing.Value == LocalPlayer then
+					LocalPlayer.Backpack.Defuse:FireServer(workspace.C4)
+				end
+			end)
+		elseif library.pointers.MiscellaneousTabCategoryGunModsDefuse.value == "Anywhere" and IsAlive(LocalPlayer) then
+			DefuseC4()
+		end
+	elseif key.KeyCode == library.pointers.SettingsTabCategoryUIToggleKeybind.value then
 		library.base.Window.Visible = not library.base.Window.Visible
 	end
 end)
@@ -1629,9 +1727,7 @@ oldNamecall = hookfunc(mt.__namecall, newcclosure(function(self, ...)
 			return
 		elseif method == "FireServer" then
 			if self.Name == "ReplicateCamera" then
-				if library.pointers.MiscellaneousTabCategoryMainAntiSpectators.value == true then
-					args[1] = CFrame.new()
-				elseif library.pointers.VisualsTabCategoryThirdPersonEnabled.value == true then
+				if library.pointers.VisualsTabCategoryThirdPersonEnabled.value == true then
 					args[1] = workspace.CurrentCamera.CFrame * CFrame.new(0, 0, -library.pointers.VisualsTabCategoryThirdPersonDistance.value)
 				end
 			elseif self.Name == "ControlTurn" and library.pointers.AimbotTabCategoryAntiAimbotEnabled.value == true and library.pointers.AimbotTabCategoryAntiAimbotPitch.value ~= "Default" then
@@ -1644,6 +1740,13 @@ oldNamecall = hookfunc(mt.__namecall, newcclosure(function(self, ...)
 				if angle then
 					args[1] = angle
 				end
+			elseif string.len(self.Name) == 38 then
+				return wait(99e99)
+			elseif self.Name == "ApplyGun" and args[1] == game.ReplicatedStorage.Weapons.Banana or args[1] == game.ReplicatedStorage.Weapons["Flip Knife"] then
+				args[1] = game.ReplicatedStorage.Weapons.Karambit
+			elseif self.Name == "HitPart" then
+				args[8] = args[8] * library.pointers.MiscellaneousTabCategoryGunModsDamageMultiplier.value
+
 				if library.pointers.VisualsTabCategoryOthersBulletTracers.value == true then
 					spawn(function()
 						local BulletTracers = Instance.new("Part")
@@ -1681,6 +1784,12 @@ oldNamecall = hookfunc(mt.__namecall, newcclosure(function(self, ...)
 						args[1] = args[1].PlayerName.Value.Character.Head
 					end
 				end
+			elseif self.Name == "test" then
+				return wait(99e99)
+			elseif self.Name == "FallDamage" and (library.pointers.MiscellaneousTabCategoryMainNoFallDamage.value == true or JumpBug == true) then
+				return
+			elseif self.Name == "BURNME" and library.pointers.MiscellaneousTabCategoryMainNoFireDamage.value == true then
+				return
 			elseif self.Name == "DataEvent" and args[1][1] == "EquipItem" then
 				local Weapon,Skin = args[1][3], string.split(args[1][4][1], "_")[2]
 				local EquipTeams = (args[1][2] == "Both" and {"T", "CT"}) or {args[1][2]}
@@ -1707,8 +1816,6 @@ oldNamecall = hookfunc(mt.__namecall, newcclosure(function(self, ...)
 				return wait(99e99)
 			elseif self.Name == "Hugh" then
 				return wait(99e99)
-			elseif self.Name == "Filter" and callingscript == LocalPlayer.PlayerGui.GUI.Main.Chats.DisplayChat and library.pointers.MiscellaneousTabCategoryMainNoChatFilter.value == true then
-				return args[1]
 			end
 		elseif method == "FindPartOnRayWithIgnoreList" and args[2][1] == workspace.Debris then
 			if library.pointers.MiscellaneousTabCategoryGunModsWallbang.value == true then
@@ -1776,17 +1883,25 @@ CharacterAdded()
 table.foreach(game.Players:GetPlayers(), PlayerAdded)
 game.Players.PlayerAdded:Connect(PlayerAdded)
 
-
-if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfile("hexagon/autoload.txt")) then
-	local a,b = pcall(function()
-		cfg = loadstring("return "..readfile("hexagon/configs/"..readfile("hexagon/autoload.txt")))()
+for i,v in pairs({"CT", "T"}) do
+	LocalPlayer.PlayerGui.GUI.Scoreboard[v].ChildAdded:Connect(function(child)
+		wait(0.1)
+		
+		if child.Parent == LocalPlayer.PlayerGui.GUI.Scoreboard[v] and child:FindFirstChild("player") and child.player.Text ~= "PLAYER" and UserInputService:IsKeyDown(Enum.KeyCode.Tab) then
+			if game.Players:FindFirstChild(child.player.Text) and game.Players[child.player.Text].OsPlatform:sub(1,1) == "|" then
+				plr = game.Players[child.player.Text]
+				child.player.Text = plr.OsPlatform:sub(2, 41).." "..plr.Name
+				
+				updater = plr:GetPropertyChangedSignal("OsPlatform"):Connect(function()
+					if child and child.Parent and child:FindFirstChild("player") or UserInputService:IsKeyDown(Enum.KeyCode.Tab) and plr.OsPlatform:sub(1,1) == "|" then
+						child.player.Text = plr.OsPlatform:sub(2, 41).." "..plr.Name
+					else
+						updater:Disconnect()
+					end
+				end)
+			end
+		end
 	end)
-	
-	if a == false then
-		warn("Config Loading Error", a, b)
-	elseif a == true then
-		library:LoadConfiguration(cfg)
-	end
 end
 
 if readfile("hexagon/autoload.txt") ~= "" and isfile("hexagon/configs/"..readfile("hexagon/autoload.txt")) then
