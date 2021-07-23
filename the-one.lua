@@ -1035,6 +1035,8 @@ MiscellaneousTabCategoryMain:AddToggle("Unlock Reset Character", false, "Miscell
 	game:GetService("StarterGui"):SetCore("ResetButtonCallback", val)
 end)
 
+MiscellaneousTabCategoryMain:AddToggle("Unlock Shop While Alive", false, "MiscellaneousTabCategoryMainUnlockShopWhileAlive")
+
 MiscellaneousTabCategoryMain:AddToggle("Show Spectators", false, "MiscellaneousTabCategoryMainShowSpectators", function(val)
 	ShowSpectators = val
 	
