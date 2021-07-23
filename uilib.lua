@@ -156,20 +156,20 @@ local library = {
     pointers = {},
     settings = {
         guiname = "Hexagon",
-		title = "Hexagon [discontinued]",
+		title = "Hexagon",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
-        footer = "Hey game.Players.LocalPlayer.Name theres a new hexagon server.",
+        footer = " Imagine pressing Copy Discord Invite.",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
         textstroke = true
     },
     theme = {
-        buttons = Color3.fromRGB(20, 200, 20), -- toggle, sliders colors
-        text = Color3.fromRGB(235, 235, 235),
+        buttons = Color3.fromRGB(19, 119, 255), -- toggle, sliders colors
+        text = Color3.fromRGB(255, 255, 255),
         textboxtext = Color3.fromRGB(145, 145, 145),
-        main = Color3.fromRGB(30, 30, 30),
-        outline = Color3.fromRGB(60, 60, 60),
+        main = Color3.fromRGB(44, 44, 44),
+        outline = Color3.fromRGB(25, 25, 25),
         tabholder = Color3.fromRGB(35, 35, 35),
         tabbutton = Color3.fromRGB(30, 30, 30),
         tabselected = Color3.fromRGB(50, 50, 50)
