@@ -1034,6 +1034,13 @@ MiscellaneousTabCategoryMain:AddButton("Crash Server(its just kill all lol)", fu
 	end)
 end)
 
+MiscellaneousTabCategoryMain:AddButton("Inf HP(dont defuse)", function() pcall(function()
+	game.ReplicatedStorage.Events.FallDamage:FireServer(0/0)
+	LocalPlayer.Character.Humanoid:GetPropertyChangedSignal("Health"):Connect(function()
+		LocalPlayer.Character.Humanoid.Health = 100
+	end)
+end) end)
+
 MiscellaneousTabCategoryMain:AddButton("Arsenal Emotes", function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/r1ck3h/hexagon/main/arsenal%20emotes"))()
 end)
