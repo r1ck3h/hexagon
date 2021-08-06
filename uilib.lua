@@ -157,8 +157,8 @@ local library = {
     settings = {
         guiname = "Hexagon",
 		title = "Hexagon",
-		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
-        footer = "wassup",
+		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=1503300065",
+        footer = "...",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
@@ -167,12 +167,12 @@ local library = {
     theme = {
         buttons = Color3.fromRGB(19, 119, 255), -- toggle, sliders colors
         text = Color3.fromRGB(255, 255, 255),
-        textboxtext = Color3.fromRGB(155, 155, 155),
-        main = Color3.fromRGB(44, 44, 44),
+        textboxtext = Color3.fromRGB(145, 145, 145),
+        main = Color3.fromRGB(30, 30, 30),
         outline = Color3.fromRGB(25, 25, 25),
-        tabholder = Color3.fromRGB(24, 24, 24),
-        tabbutton = Color3.fromRGB(48, 48, 48),
-        tabselected = Color3.fromRGB(30, 0, 30)
+        tabholder = Color3.fromRGB(35, 35, 35),
+        tabbutton = Color3.fromRGB(30, 30, 30),
+        tabselected = Color3.fromRGB(50, 50, 50)
     }
 }
 
@@ -204,7 +204,7 @@ function library:Notify(title, message, time, buttons, _function)
 		ZIndex = 100,
 		Size = UDim2.new(0,220,0,80),
 		Position = UDim2.new(0,-300,1,-90),
-		BackgroundColor3 = Color3.fromRGB(30,30,30),
+		BackgroundColor3 = Color3.fromRGB(44,44,44),
 		Text = "",
 		Name = "Notification",
 		Parent = library.base
