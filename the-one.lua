@@ -70,19 +70,6 @@ local oldMusicCT = game.Players.LocalPlayer.PlayerGui.Music.ValveCT:Clone()
 
 local Weapons = {}; for i,v in pairs(game.ReplicatedStorage.Weapons:GetChildren()) do if v:FindFirstChild("Model") then table.insert(Weapons, v.Name) end end
 
-local Sounds = {
-	["TTT a"] = workspace.RoundEnd,
-	["TTT b"] = workspace.RoundStart,
-	["T Win"] = workspace.Sounds.T,
-	["CT Win"] = workspace.Sounds.CT,
-	["Planted"] = workspace.Sounds.Arm,
-	["Defused"] = workspace.Sounds.Defuse,
-	["Rescued"] = workspace.Sounds.Rescue,
-	["Explosion"] = workspace.Sounds.Explosion,
-	["Becky"] = workspace.Sounds.Becky,
-	["Beep"] = workspace.Sounds.Beep
-}
-	
 local FOVCircle = Drawing.new("Circle")
 local Cases = {}; for i,v in pairs(game.ReplicatedStorage.Cases:GetChildren()) do table.insert(Cases, v.Name) end
 
@@ -712,39 +699,6 @@ end)
 
 VisualsTabCategoryOthers:AddToggle("Force Crosshair", false, "VisualsTabCategoryOthersForceCrosshair")
 
-VisualsTabCategoryOthers:AddToggle("Old Music", false, "VisualsTabCategoryOthersOldMusic", function(val)
-	if val == true then
-		-- T
-		LocalPlayer.PlayerGui.Music.ValveT.Lose.SoundId = "rbxassetid://168869486"
-		LocalPlayer.PlayerGui.Music.ValveT.Win.SoundId = "rbxassetid://203383389"
-		LocalPlayer.PlayerGui.Music.ValveT.StartRound["1"].SoundId = "rbxassetid://203383443"
-		StartRound2 = LocalPlayer.PlayerGui.Music.ValveT.StartRound["1"]:Clone() StartRound2.Name = "2" StartRound2.SoundId = "rbxassetid://329924698" StartRound2.Parent = LocalPlayer.PlayerGui.Music.ValveT.StartRound
-		StartRound3 = LocalPlayer.PlayerGui.Music.ValveT.StartRound["1"]:Clone() StartRound3.Name = "3" StartRound3.SoundId = "rbxassetid://329924746" StartRound3.Parent = LocalPlayer.PlayerGui.Music.ValveT.StartRound
-		StartRound4 = LocalPlayer.PlayerGui.Music.ValveT.StartRound["1"]:Clone() StartRound4.Name = "4" StartRound4.SoundId = "rbxassetid://329924808" StartRound4.Parent = LocalPlayer.PlayerGui.Music.ValveT.StartRound
-		LocalPlayer.PlayerGui.Music.ValveT.StartAction["1"].SoundId = "rbxassetid://203383519"
-		StartAction2 = LocalPlayer.PlayerGui.Music.ValveT.StartAction["1"]:Clone() StartAction2.Name = "2" StartAction2.SoundId = "rbxassetid://329924647" StartAction2.Parent = LocalPlayer.PlayerGui.Music.ValveT.StartAction
-		LocalPlayer.PlayerGui.Music.ValveT["10"].SoundId = "rbxassetid://340817948"
-		LocalPlayer.PlayerGui.Music.ValveT["10"].Volume = 0.4
-		LocalPlayer.PlayerGui.Music.ValveT.Bomb.SoundId = "rbxassetid://340817926"
-		-- CT
-		LocalPlayer.PlayerGui.Music.ValveCT.Lose.SoundId = "rbxassetid://168869486"
-		LocalPlayer.PlayerGui.Music.ValveCT.Win.SoundId = "rbxassetid://203383389"
-		LocalPlayer.PlayerGui.Music.ValveCT.StartRound["1"].SoundId = "rbxassetid://203383443"
-		StartRound2 = LocalPlayer.PlayerGui.Music.ValveCT.StartRound["1"]:Clone() StartRound2.Name = "2" StartRound2.SoundId = "rbxassetid://329924698" StartRound2.Parent = LocalPlayer.PlayerGui.Music.ValveCT.StartRound
-		StartRound3 = LocalPlayer.PlayerGui.Music.ValveCT.StartRound["1"]:Clone() StartRound3.Name = "3" StartRound3.SoundId = "rbxassetid://329924746" StartRound3.Parent = LocalPlayer.PlayerGui.Music.ValveCT.StartRound
-		StartRound4 = LocalPlayer.PlayerGui.Music.ValveCT.StartRound["1"]:Clone() StartRound4.Name = "4" StartRound4.SoundId = "rbxassetid://329924808" StartRound4.Parent = LocalPlayer.PlayerGui.Music.ValveCT.StartRound
-		LocalPlayer.PlayerGui.Music.ValveCT.StartAction["1"].SoundId = "rbxassetid://203383519"
-		StartAction2 = LocalPlayer.PlayerGui.Music.ValveCT.StartAction["1"]:Clone() StartAction2.Name = "2" StartAction2.SoundId = "rbxassetid://329924647" StartAction2.Parent = LocalPlayer.PlayerGui.Music.ValveCT.StartAction
-		LocalPlayer.PlayerGui.Music.ValveCT["10"].SoundId = "rbxassetid://340817891"
-		LocalPlayer.PlayerGui.Music.ValveCT["10"].Volume = 0.4
-		LocalPlayer.PlayerGui.Music.ValveCT.Bomb.SoundId = "rbxassetid://340817834"
-	elseif val == false then
-		LocalPlayer.PlayerGui.Music.ValveT:Destroy()
-		LocalPlayer.PlayerGui.Music.ValveCT:Destroy()
-		oldMusicT:Clone().Parent = LocalPlayer.PlayerGui.Music
-		oldMusicCT:Clone().Parent = LocalPlayer.PlayerGui.Music
-	end
-end)
 
 VisualsTabCategoryOthers:AddToggle("Bullet Tracers", false, "VisualsTabCategoryOthersBulletTracers")
 
@@ -872,61 +826,6 @@ VisualsTabCategoryThirdPerson:AddSlider("Distance", {0, 50, 10, 1, ""}, "Visuals
 local MiscellaneousTab = Window:CreateTab("Miscellaneous")
 
 local MiscellaneousTabCategoryMain = MiscellaneousTab:AddCategory("Main", 1)
-
-MiscellaneousTabCategoryMain:AddDropdown("Barriers", {"Normal", "Visible", "Remove"}, "-", "MiscellaneousTabCategoryMainBarriers", function(val)
-	pcall(function()
-	if val ~= "-" then
-		local Clips = workspace.Map.Clips; Clips.Name = "FAT"; Clips.Parent = nil
-		local Killers = workspace.Map.Killers; Killers.Name = "FAT"; Killers.Parent = nil
-
-		if val == "Normal" then	
-			for i,v in pairs(Clips:GetChildren()) do
-				if v:IsA("BasePart") then
-					v.Transparency = 1
-					v.CanCollide = true
-				end
-			end
-			for i,v in pairs(Killers:GetChildren()) do
-				if v:IsA("BasePart") then
-					v.Transparency = 1
-					v.CanCollide = true
-				end
-			end
-		elseif val == "Visible" then
-			for i,v in pairs(Clips:GetChildren()) do
-				if v:IsA("BasePart") then
-					v.Transparency = 0.9
-					v.Material = "Neon"
-					v.Color = Color3.fromRGB(255, 0, 255)
-				end
-			end
-			for i,v in pairs(Killers:GetChildren()) do
-				if v:IsA("BasePart") then
-					v.Transparency = 0.9
-					v.Material = "Neon"
-					v.Color = Color3.fromRGB(255, 0, 0)
-				end
-			end
-		elseif val == "Remove" then
-			for i,v in pairs(Clips:GetChildren()) do
-				if v:IsA("BasePart") then
-					v:Remove()
-				end
-			end
-			for i,v in pairs(Killers:GetChildren()) do
-				if v:IsA("BasePart") then
-					v:Remove()
-				end
-			end
-		end
-
-		Killers.Name = "Killers"; Killers.Parent = workspace.Map
-		Clips.Name = "Clips"; Clips.Parent = workspace.Map
-		
-		library.pointers.MiscellaneousTabCategoryMainBarriers:Set("-")
-	end
-	end)
-end)
 
 local a,b = pcall(function()
 	MiscellaneousTabCategoryMain:AddMultiDropdown("Custom Models", TableToNames(loadstring("return "..readfile("hexagon/custom_models.txt"))(), true), {}, "MiscellaneousTabCategoryMainCustomModels", function(val)
@@ -1306,19 +1205,6 @@ MiscellaneousTabCategoryBacktrack:AddColorPicker("Color", Color3.new(1,1,1), "Mi
 
 local MiscellaneousTabCategoryGrenade = MiscellaneousTab:AddCategory("Grenade", 2)
 
-MiscellaneousTabCategoryGrenade:AddKeybind("Keybind", nil, "MiscellaneousTabCategoryGrenadeKeybind", function(val)
-	if val == true and UserInputService:GetFocusedTextBox() == nil then
-		game:GetService("ReplicatedStorage").Events.ThrowGrenade:FireServer(
-			game.ReplicatedStorage.Weapons[library.pointers.MiscellaneousTabCategoryGrenadeType.value].Model,
-			nil,
-			25,
-			35,
-			workspace.CurrentCamera.CFrame.lookVector * (5 * library.pointers.MiscellaneousTabCategoryGrenadeVelocity.value),
-			nil,
-			nil
-		)
-	end
-end)
 
 MiscellaneousTabCategoryGrenade:AddSlider("Velocity", {0, 100, 10, 1, ""}, "MiscellaneousTabCategoryGrenadeVelocity")
 
