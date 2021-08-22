@@ -1034,6 +1034,35 @@ MiscellaneousTabCategoryMain:AddToggle("Kill All", false, "MiscellaneousTabCateg
 	end
 end)
 
+MiscellaneousTabCategoryMain:AddToggle("Kill All 2", false, "MiscellaneousTabCategoryMainKillEnemies", function(val)
+	if val == true then
+		KillEnemiesLoop = game:GetService("RunService").RenderStepped:Connect(function()
+			pcall(function()
+				for i,v in pairs(game.Players:GetChildren()) do
+					if v ~= LocalPlayer and IsAlive(v) and IsAlive(LocalPlayer) and GetTeam(v) ~= GetTeam(LocalPlayer) then
+						local Arguments = {
+							[1] = v.Character.Head,
+							[2] = v.Character.Head.Position,
+							[3] = "Banana",
+							[4] = 100,
+							[5] = LocalPlayer.Character.Gun,
+							[8] = 100,
+							[9] = false,
+							[10] = false,
+							[11] = Vector3.new(),
+							[12] = 100,
+							[13] = Vector3.new()
+						}
+						game.ReplicatedStorage.Events.HitPart:FireServer(unpack(Arguments))
+					end
+				end
+			end)
+		end)
+	elseif val == false and KillEnemiesLoop then
+		KillEnemiesLoop:Disconnect()
+	end
+end)
+
 MiscellaneousTabCategoryMain:AddTextBox("Hit Sound", "", "MiscellaneousTabCategoryMainHitSound")
 
 MiscellaneousTabCategoryMain:AddTextBox("Kill Sound", "", "MiscellaneousTabCategoryMainKillSound")
