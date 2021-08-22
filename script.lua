@@ -1001,7 +1001,7 @@ MiscellaneousTabCategoryMain:AddToggle("No Fall Damage", false, "MiscellaneousTa
 
 MiscellaneousTabCategoryMain:AddToggle("No Fire Damage", false, "MiscellaneousTabCategoryMainNoFireDamage")
 
-MiscellaneousTabCategoryMain:AddToggle("Kill All", false, "MiscellaneousTabCategoryMainKillAll", function(val)
+MiscellaneousTabCategoryMain:AddToggle("Kill All(not laggy)", false, "MiscellaneousTabCategoryMainKillAll", function(val)
 	if val == true then
 	    KillAllLoop = game:GetService("RunService").RenderStepped:Connect(function()
 		pcall(function()
@@ -1030,7 +1030,7 @@ MiscellaneousTabCategoryMain:AddToggle("Kill All", false, "MiscellaneousTabCateg
 	end
 end)
 
-MiscellaneousTabCategoryMain:AddToggle("Kill All 2", false, "MiscellaneousTabCategoryMainKillEnemies", function(val)
+MiscellaneousTabCategoryMain:AddToggle("Kill All(laggy)", false, "MiscellaneousTabCategoryMainKillEnemies", function(val)
 	if val == true then
 		KillEnemiesLoop = game:GetService("RunService").RenderStepped:Connect(function()
 			pcall(function()
