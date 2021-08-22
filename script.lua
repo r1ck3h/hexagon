@@ -907,32 +907,18 @@ MiscellaneousTabCategoryMain:AddButton("Inject Custom Skins", function()
 	end
 end)
 
-MiscellaneousTabCategoryMain:AddButton("Crash Server(its just kill all lol)", function()
-	KillAllLoop = game:GetService("RunService").RenderStepped:Connect(function()
-		wait()
-		pcall(function()
-			for i,v in pairs(game.Players:GetChildren()) do
-				if v ~= LocalPlayer and IsAlive(v) and IsAlive(LocalPlayer) then
-					local Arguments = {
-						[1] = v.Character.Head,
-						[2] = v.Character.Head.Position,
-						[3] = "Banana",
-						[4] = 100,
-						[5] = LocalPlayer.Character.Gun,
-						[8] = 100,
-						[9] = false,
-						[10] = false,
-						[11] = Vector3.new(),
-						[12] = 100,
-						[13] = Vector3.new()
-					}
-					game.ReplicatedStorage.Events.HitPart:FireServer(unpack(Arguments))
-				end
-			end
+MiscellaneousTabCategoryMain:AddButton("Crash Server", function()
+		if LocalPlayer.Character then
+		game:GetService("RunService").RenderStepped:Connect(function()
+			game:GetService("ReplicatedStorage").Events.ThrowGrenade:FireServer(game:GetService("ReplicatedStorage").Weapons["Molotov"].Model, nil, 25, 35, Vector3.new(0,-100,0), nil, nil)
+			game:GetService("ReplicatedStorage").Events.ThrowGrenade:FireServer(game:GetService("ReplicatedStorage").Weapons["HE Grenade"].Model, nil, 25, 35, Vector3.new(0,-100,0), nil, nil)
+			game:GetService("ReplicatedStorage").Events.ThrowGrenade:FireServer(game:GetService("ReplicatedStorage").Weapons["Decoy Grenade"].Model, nil, 25, 35, Vector3.new(0,-100,0), nil, nil)
+			game:GetService("ReplicatedStorage").Events.ThrowGrenade:FireServer(game:GetService("ReplicatedStorage").Weapons["Smoke Grenade"].Model, nil, 25, 35, Vector3.new(0,-100,0), nil, nil)
+			game:GetService("ReplicatedStorage").Events.ThrowGrenade:FireServer(game:GetService("ReplicatedStorage").Weapons["Flashbang"].Model, nil, 25, 35, Vector3.new(0,-100,0), nil, nil)
 		end)
-	end)
+	end
 end)
-
+	
 MiscellaneousTabCategoryMain:AddButton("Inf HP(dont defuse)", function() pcall(function()
 	game.ReplicatedStorage.Events.FallDamage:FireServer(0/0)
 	LocalPlayer.Character.Humanoid:GetPropertyChangedSignal("Health"):Connect(function()
