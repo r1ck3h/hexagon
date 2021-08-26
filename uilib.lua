@@ -158,14 +158,14 @@ local library = {
         guiname = "Hexagon",
 		title = "Hexagon",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=1503300065",
-        footer = "...",
+        footer = "hi.. game.Players.LocalPlayer.Name..",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
         textstroke = true
     },
     theme = {
-        buttons = Color3.fromRGB(19, 119, 255), -- toggle, sliders colors
+        buttons = Color3.fromRGB(0, 250, 154), -- toggle, sliders colors
         text = Color3.fromRGB(255, 255, 255),
         textboxtext = Color3.fromRGB(145, 145, 145),
         main = Color3.fromRGB(30, 30, 30),
