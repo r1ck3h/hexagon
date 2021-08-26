@@ -158,7 +158,7 @@ local library = {
         guiname = "Hexagon",
 		title = "Hexagon",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=1503300065",
-        footer = "hi.. game.Players.LocalPlayer.Name..",
+        footer = "hi ".. game.Players.LocalPlayer.Name..",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
