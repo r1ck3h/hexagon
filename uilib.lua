@@ -156,9 +156,9 @@ local library = {
     pointers = {},
     settings = {
         guiname = "Hexagon",
-		title = "Hexagon [Exodus Edition]",
+		title = "Hexagon [Legit Edition]",
 		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
-        footer = " Exodus Winning $$$",
+        footer = "Alt + 69 = E",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
@@ -474,8 +474,8 @@ function library:CreateWindow(csize, cpos)
 	local spectators = {}
 
 	spectators.main = library:create("TextButton", {
-		Position = UDim2.new(0,1,0.325,0),
-		Size = UDim2.new(0,205,0,30),
+		Position = UDim2.new(0,1.01,0.335,0),
+		Size = UDim2.new(0,205,0,35),
 		BackgroundColor3 = self.theme.main,
 		BorderColor3 = self.theme.outline,
 		Text = "",
@@ -516,7 +516,7 @@ function library:CreateWindow(csize, cpos)
 	
 	spectators.layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		if spectators.layout.AbsoluteContentSize.Y == 0 then
-			spectators.main.Size = UDim2.new(0,205,0,30)
+			spectators.main.Size = UDim2.new(0,205,0,35)
 		else
 			spectators.main.Size = UDim2.new(0,205,0,spectators.layout.AbsoluteContentSize.Y+34)
 		end
