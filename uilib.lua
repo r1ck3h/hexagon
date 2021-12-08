@@ -165,7 +165,7 @@ local library = {
         textstroke = true
     },
     theme = {
-        buttons = Color3.fromRGB(0, 250, 154), -- toggle, sliders colors
+        buttons = Color3.fromRGB(30, 155, 255), -- toggle, sliders colors
         text = Color3.fromRGB(235, 235, 235),
         textboxtext = Color3.fromRGB(145, 145, 145),
         main = Color3.fromRGB(30, 30, 30),
@@ -475,16 +475,17 @@ function library:CreateWindow(csize, cpos)
 
 	spectators.main = library:create("TextButton", {
 		Position = UDim2.new(0, (workspace.CurrentCamera.ViewportSize.X/2)-100, 0, (workspace.CurrentCamera.ViewportSize.Y/2)-320),
-		Size = UDim2.new(0,200,0,40),
+		Size = UDim2.new(0,205,0,30),
+		Postion = UDim2.new(0,1,0.325,0)
 		BackgroundColor3 = self.theme.main,
 		BorderColor3 = self.theme.outline,
 		Text = "",
 		Name = "Spectators",
 		AutoButtonColor = false,
 		Active = true,
-		Draggable = true,
+		Draggable = false,
 		Selectable = true,
-		Visible = false,
+		Visible = true,
 		Parent = library.base
 	})
 
@@ -516,9 +517,9 @@ function library:CreateWindow(csize, cpos)
 	
 	spectators.layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		if spectators.layout.AbsoluteContentSize.Y == 0 then
-			spectators.main.Size = UDim2.new(0,200,0,40)
+			spectators.main.Size = UDim2.new(0,205,0,30)
 		else
-			spectators.main.Size = UDim2.new(0,200,0,spectators.layout.AbsoluteContentSize.Y+34)
+			spectators.main.Size = UDim2.new(0,205,0,spectators.layout.AbsoluteContentSize.Y+34)
 		end
 	end)
 	
