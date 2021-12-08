@@ -156,9 +156,9 @@ local library = {
     pointers = {},
     settings = {
         guiname = "Hexagon",
-		title = "Hexagon",
-		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=1503300065",
-        footer = "hi",
+		title = "Hexagon [Exodus Edition]",
+		logo = "rbxassetid://4350178803", -- "http://www.roblox.com/asset/?id=6597976562",
+        footer = " Exodus Winning $$$",
         modal = true,
         font = Enum.Font.SourceSans,
         textsize = 16,
@@ -204,7 +204,7 @@ function library:Notify(title, message, time, buttons, _function)
 		ZIndex = 100,
 		Size = UDim2.new(0,220,0,80),
 		Position = UDim2.new(0,-300,1,-90),
-		BackgroundColor3 = Color3.fromRGB(44,44,44),
+		BackgroundColor3 = Color3.fromRGB(30,30,30),
 		Text = "",
 		Name = "Notification",
 		Parent = library.base
